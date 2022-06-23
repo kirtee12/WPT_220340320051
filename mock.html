@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>book details</title>
+	<script src="jquery-3.5.1.min.js"></script>
+	<script>
+       $(()=>{
+		console.log("page loaded");
+	   
+		$('#bookid').blur(()=>{
+			console.log("blur event occured");
+			let input = {bookid: $('bookid').val()}
+			let ajaxparameters = {
+				data : input,
+				url: 'http://localhost:8081/getdetails',
+				type:'get',
+				datatype: 'json',
+				success : (datafromserver) => {
+					if(datafromserver.status === true){
+						console.log("data fetched successfully");
+						$('#bookid').val(datafromserver.bookdetails.bookid);
+						$('#bookname').val(datafromserver.bookdetails.bookname);
+						$('#price').val(datafromserver.bookdetails.price);
+						$('#msg').text("book details found");
+						 $('#update').prop("disabled",false);
+					}
+					else{
+						$('#bookid').val("");
+						$('#bookname').val("");
+						$('#price').val("");
+						$('#msg').text("book details not found");
+						$('#update').prop("disabled",true);
+
+					}
+
+				},
+				error: (errorfromserver) => {
+					console.log("Error occured"+errorfromserver);
+				}
+
+			}
+			$.ajax(ajaxparameters);
+		});
+       $('#update').click(()=> {
+         console.log("update button clicked");
+
+		 let input = {bookid: $('#bookid').val(),bookname: $('#bookname').val(),price: $('#price').val()}
+
+		 let parameterstothefunction = {
+			data: input,
+			url: 'http://localhost:8081/updateprice',
+			type:'get',
+			datatype: 'json',
+			success: (datafromserver) => {
+             if(datafromserver.status === true){
+             console.log("updated successfully");
+			 $('#msg').text("Update Unsuccessfully");
+
+			 }
+			 else {
+				console.log("updated unsuccessfully");
+			 $('#msg').text("Update Unsuccessfully");
+			 }
+			},
+			error: (errorfromserver)=> {
+				console.log("errorfromserver");
+			 $('#msg').text("erroroccured");
+
+			}
+	    }
+
+		
+	
+		$.ajax(ajaxparameters);
+	});
+});
+    </script>
+	</head>
+	<body>
+		<h1>Exam</h1>
+		<input type = "text" name="bookid" placeholder="book id">
+		<span id = "msg"></span><br>
+		<input type = "text" name="bookname" placeholder="book name"><br>
+		<input type = "text" name="price" placeholder="price "><br>
+		<input type = "text" name="bookid" placeholder="book id">
+		<input type = "button" value="UPDATE" id = "update" disabled>
+		<hr>
+	    <span id = "display"></span>
+		</body>
+
+	
+</html>
